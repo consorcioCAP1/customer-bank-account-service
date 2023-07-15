@@ -78,48 +78,28 @@ public class CustomerBankAccountServiceImpl implements CustomerBankAccountServic
 
 	@Override
 	public Mono<CustomerBankAccount> saveBusinessAccount(CustomerBankAccountDto businessBankAccount) {
-		if (businessBankAccount.getAccountType().equals(ACCOUNT_TYPE_CURRENT)) {
-			log.info("registrando cuenta de empresarial de cliente: "+ businessBankAccount.getDni());
-			CustomerBankAccount customerBankAccountDocument = CustomerBankAccount.builder()
-					.ruc(businessBankAccount.getRuc())
-					.businessName(businessBankAccount.getBusinessName())
-					.clientId(businessBankAccount.getClientId())
-					.typeCustomer(businessBankAccount.getTypeCustomer())
-					.maintenanceFeeApplies(0.00)
-					.bankMovementLimit(0)
-					.bankMovementDay(businessBankAccount.getBankMovementDay())
-					.accountBalance(businessBankAccount.getAccountBalance())
-					.openingDate(businessBankAccount.getOpeningDate())
-					.bankAccountNumber(businessBankAccount.getBankAccountNumber()).build();
-			return repository.save(customerBankAccountDocument);
+		if (businessBankAccount.getBankAccountHolder().length==0) {
+			if (businessBankAccount.getAccountType().equals(ACCOUNT_TYPE_CURRENT)) {
+				log.info("registrando cuenta de empresarial de cliente: "+ businessBankAccount.getDni());
+				CustomerBankAccount customerBankAccountDocument = CustomerBankAccount.builder()
+						.ruc(businessBankAccount.getRuc())
+						.businessName(businessBankAccount.getBusinessName())
+						.clientId(businessBankAccount.getClientId())
+						.typeCustomer(businessBankAccount.getTypeCustomer())
+						.maintenanceFeeApplies(0.00)
+						.bankMovementLimit(0)
+						.bankMovementDay(businessBankAccount.getBankMovementDay())
+						.accountBalance(businessBankAccount.getAccountBalance())
+						.openingDate(businessBankAccount.getOpeningDate())
+						.bankAccountNumber(businessBankAccount.getBankAccountNumber()).build();
+				return repository.save(customerBankAccountDocument);
+			}
+			else return Mono.error(new RuntimeException("El Cliente Empresarial solo puede tener cuentas corrientes."));	
 		}
-		else return Mono.error(new RuntimeException("El Cliente Empresarial solo puede tener cuentas corrientes.")); 
+		else return Mono.error(new RuntimeException("Las cuentas empresariales deben tener al menos 1 titular."));
+		 
 	}
 	
-	@Override
-	public Mono<CustomerBankAccount> get(String customerAccountId) {
-
-		return null;
-	}
-
-	@Override
-	public Flux<CustomerBankAccount> getAll() {
-
-		return null;
-	}
-
-	@Override
-	public Mono<CustomerBankAccount> update(CustomerBankAccount customerBankAccount, String customerAccountId) {
-
-		return null;
-	}
-
-	@Override
-	public Mono<Void> delete(String customerAccountId) {
-
-		return null;
-	}
-
 
 
 	
