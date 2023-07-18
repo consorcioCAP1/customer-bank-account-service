@@ -21,44 +21,47 @@ import reactor.core.publisher.Mono;
 @RequestMapping("/")
 public class CustomerBankAccountController {
 
-	@Autowired
-	private CustomerBankAccountService customerBankAccountService;
+    @Autowired
+    private CustomerBankAccountService customerBankAccountService;
 
-	@PostMapping("/createCustomerPersonalAccount")
-    public   Mono<ResponseEntity<Object>> createCustomerPersonalAccount(@RequestBody CustomerBankAccountDto customerDto) {
-		return customerBankAccountService.saveCustomerAccount(customerDto)
-				 .flatMap(objResponse -> {
-	                    ResponseEntity<Object> responseEntity = ResponseEntity.ok(objResponse);
-	                    return Mono.just(responseEntity);
-	                })
-	                .onErrorResume(error -> {
-	                    ResponseEntity<Object> responseEntity = ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error.getMessage());
-	                    return Mono.just(responseEntity);
-	                });
-	}
+    @PostMapping("/createCustomerPersonalAccount")
+    public Mono<ResponseEntity<Object>> createCustomerPersonalAccount(@RequestBody CustomerBankAccountDto customerDto) {
+        return customerBankAccountService.saveCustomerAccount(customerDto)
+                .flatMap(objResponse -> {
+                    ResponseEntity<Object> responseEntity = ResponseEntity.ok(objResponse);
+                    return Mono.just(responseEntity);
+                })
+                .onErrorResume(error -> {
+                    ResponseEntity<Object> responseEntity = ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    		.body(error.getMessage());
+                    return Mono.just(responseEntity);
+                });
+    }
 
-	@PostMapping("/createCustomerBusinessAccount")
-    public   Mono<ResponseEntity<Object>> createCustomerBusinessAccount(@RequestBody CustomerBankAccountDto customerDto) {
-		return customerBankAccountService.saveBusinessAccount(customerDto)
-				 .flatMap(objResponse -> {
-	                    ResponseEntity<Object> responseEntity = ResponseEntity.ok(objResponse);
-	                    return Mono.just(responseEntity);
-	                })	                .onErrorResume(error -> {
-	                    ResponseEntity<Object> responseEntity = ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error.getMessage());
-	                    return Mono.just(responseEntity);
-	                });
-	}
-	
-	@GetMapping("/getAccountBalance/{bankAccountNumber}")
+    @PostMapping("/createCustomerBusinessAccount")
+    public Mono<ResponseEntity<Object>> createCustomerBusinessAccount(@RequestBody CustomerBankAccountDto customerDto) {
+        return customerBankAccountService.saveBusinessAccount(customerDto)
+                .flatMap(objResponse -> {
+                    ResponseEntity<Object> responseEntity = ResponseEntity.ok(objResponse);
+                    return Mono.just(responseEntity);
+                })
+                .onErrorResume(error -> {
+                    ResponseEntity<Object> responseEntity = ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    		.body(error.getMessage());
+                    return Mono.just(responseEntity);
+                });
+    }
+
+    @GetMapping("/getAccountBalance/{bankAccountNumber}")
     public Mono<Double> getAccountBalance(@PathVariable String bankAccountNumber) {
         return customerBankAccountService.getAccountBalanceByBankAccountNumber(bankAccountNumber);
     }
 
     @PutMapping("/updateAccountBalance/{bankAccountNumber}")
     public Mono<ResponseEntity<CustomerBankAccount>> updateAccountBalance(@PathVariable String bankAccountNumber,
-                                                           @RequestParam Double accountBalance) {
+                                                                           @RequestParam Double accountBalance) {
         return customerBankAccountService.updateAccountBalance(bankAccountNumber, accountBalance)
-        		.map(ResponseEntity::ok)
+                .map(ResponseEntity::ok)
                 .defaultIfEmpty(ResponseEntity.notFound().build());
     }
 }
