@@ -9,16 +9,13 @@ import com.nttdata.bootcamp.customerbankaccountservice.dto.CustomerBankAccountDt
 import com.nttdata.bootcamp.customerbankaccountservice.repository.CustomerBankAccountRepository;
 import com.nttdata.bootcamp.customerbankaccountservice.service.CustomerBankAccountService;
 import lombok.extern.slf4j.Slf4j;
-
-
-import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @Slf4j
 @Service
 public class CustomerBankAccountServiceImpl implements CustomerBankAccountService{
 	
-	public final String TYPE_CUSTOMER_CUSTOMER = "CUSTOMER";
+	public final String TYPE_CUSTOMER_PERSONAL = "PERSONAL";
 	public final String TYPE_CUSTOMER_BUSINESS = "BUSINESS";
 	
 	public final String ACCOUNT_TYPE_SAVING = "SAVING";
@@ -32,7 +29,7 @@ public class CustomerBankAccountServiceImpl implements CustomerBankAccountServic
 	//metodo para guardar cuentas clientes personal
 	@Override
 	public Mono<CustomerBankAccount> saveCustomerAccount(CustomerBankAccountDto customerBankAccount) {
-		customerBankAccount.setTypeCustomer(TYPE_CUSTOMER_CUSTOMER);
+		customerBankAccount.setTypeCustomer(TYPE_CUSTOMER_PERSONAL);
 		//si es cuenta de ahorro o corriente se valida la que no haya una previamente creada
 		if (customerBankAccount.getAccountType().equals(ACCOUNT_TYPE_SAVING) || customerBankAccount.getAccountType().equals(ACCOUNT_TYPE_CURRENT) ) {
 			//se realiza la busqueda de cuenta personal por dni y por el tipo de cuenta
@@ -99,8 +96,22 @@ public class CustomerBankAccountServiceImpl implements CustomerBankAccountServic
 		else return Mono.error(new RuntimeException("Las cuentas empresariales deben tener al menos 1 titular."));
 		 
 	}
-	
 
+	//metodo para obtener el saldo disponible del numero de cuenta
+	@Override
+	public Mono<Double> getAccountBalanceByBankAccountNumber(String bankAccountNumber){
+		return repository.findAccountBalanceByBankAccountNumber(bankAccountNumber)
+	            .map(bankAccount -> bankAccount.getAccountBalance());
+    }
 
-	
+	//metodo para actualizar le account balance en base al numero de cuenta
+	@Override
+	public Mono<CustomerBankAccount> updateAccountBalance(String bankAccountNumber, Double accountBalance) {
+	        return repository.findByBankAccountNumber(bankAccountNumber)
+	                .flatMap(bankAccount -> {
+	                	bankAccount.setAccountBalance(accountBalance);
+	                    return repository.save(bankAccount);
+	                });
+	   }
+
 }

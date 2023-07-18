@@ -2,6 +2,7 @@ package com.nttdata.bootcamp.customerbankaccountservice.documents;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.Field;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -26,6 +27,7 @@ public class CustomerBankAccount {
 	private int bankMovementDay;
 	private String[] bankAccountHolder;
 	private String[] bankSignatory;
+	@Field("accountBalance")
 	private Double accountBalance;
 	private String openingDate;
 	private String bankAccountNumber;

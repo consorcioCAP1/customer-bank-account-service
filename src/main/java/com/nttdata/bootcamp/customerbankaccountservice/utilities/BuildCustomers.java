@@ -6,7 +6,7 @@ import com.nttdata.bootcamp.customerbankaccountservice.dto.CustomerBankAccountDt
 public class BuildCustomers {
 
 	//construccion de la cuenta de ahorro
-	public CustomerBankAccount buildCustomerSavingsAccount(CustomerBankAccountDto dto) {
+	public static CustomerBankAccount buildCustomerSavingsAccount(CustomerBankAccountDto dto) {
 		return CustomerBankAccount.builder()
 				.name(dto.getName())
 				.dni(dto.getDni())
@@ -19,7 +19,7 @@ public class BuildCustomers {
 	}
 
 	//construccion de la cuenta corriente
-	public CustomerBankAccount buildCustomerCurrentAccount(CustomerBankAccountDto dto) {
+	public static CustomerBankAccount buildCustomerCurrentAccount(CustomerBankAccountDto dto) {
 		return CustomerBankAccount.builder()
 				.name(dto.getName())
 				.dni(dto.getDni())
@@ -33,7 +33,7 @@ public class BuildCustomers {
 	}
 
 	//construccion de la cuenta plazo fijo
-	public CustomerBankAccount buildCustomerFixedTermAccount(CustomerBankAccountDto dto) {
+	public static CustomerBankAccount buildCustomerFixedTermAccount(CustomerBankAccountDto dto) {
 		return CustomerBankAccount.builder()
 				.name(dto.getName())
 				.dni(dto.getDni())
@@ -48,7 +48,7 @@ public class BuildCustomers {
 	}
 
 	//construccion de la cuenta plazo fijo
-	public CustomerBankAccount buildCustomerBusiness(CustomerBankAccountDto dto) {
+	public static CustomerBankAccount buildCustomerBusiness(CustomerBankAccountDto dto) {
 		return CustomerBankAccount.builder()
 				.ruc(dto.getRuc())
 				.businessName(dto.getBusinessName())
