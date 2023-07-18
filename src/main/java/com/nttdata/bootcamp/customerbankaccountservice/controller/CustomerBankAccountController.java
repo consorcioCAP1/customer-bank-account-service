@@ -58,7 +58,7 @@ public class CustomerBankAccountController {
     public Mono<ResponseEntity<CustomerBankAccount>> updateAccountBalance(@PathVariable String bankAccountNumber,
                                                            @RequestParam Double accountBalance) {
         return customerBankAccountService.updateAccountBalance(bankAccountNumber, accountBalance)
-        		.map(bankAccount -> ResponseEntity.ok(bankAccount))
+        		.map(ResponseEntity::ok)
                 .defaultIfEmpty(ResponseEntity.notFound().build());
     }
 }

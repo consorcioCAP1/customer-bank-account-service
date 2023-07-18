@@ -15,12 +15,12 @@ import reactor.core.publisher.Mono;
 @Service
 public class CustomerBankAccountServiceImpl implements CustomerBankAccountService{
 	
-	public final String TYPE_CUSTOMER_PERSONAL = "PERSONAL";
-	public final String TYPE_CUSTOMER_BUSINESS = "BUSINESS";
+	public static final String TYPE_CUSTOMER_PERSONAL = "PERSONAL";
+	public static final String TYPE_CUSTOMER_BUSINESS = "BUSINESS";
 	
-	public final String ACCOUNT_TYPE_SAVING = "SAVING";
-	public final String ACCOUNT_TYPE_CURRENT = "CURRENT";
-	public final String ACCOUNT_TYPE_FIXED_TERM = "FIXED";
+	public static final String ACCOUNT_TYPE_SAVING = "SAVING";
+	public static final String ACCOUNT_TYPE_CURRENT = "CURRENT";
+	public static final String ACCOUNT_TYPE_FIXED_TERM = "FIXED";
 
 	@Autowired
 	CustomerBankAccountRepository repository;

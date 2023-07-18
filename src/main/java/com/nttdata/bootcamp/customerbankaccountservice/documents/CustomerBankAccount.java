@@ -3,13 +3,10 @@ package com.nttdata.bootcamp.customerbankaccountservice.documents;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
-
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 
 @Document(collection = "customerBankAccount")
-@AllArgsConstructor
 @Data
 @Builder
 public class CustomerBankAccount {

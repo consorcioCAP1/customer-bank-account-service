@@ -4,7 +4,8 @@ import com.nttdata.bootcamp.customerbankaccountservice.documents.CustomerBankAcc
 import com.nttdata.bootcamp.customerbankaccountservice.dto.CustomerBankAccountDto;
 
 public class BuildCustomers {
-
+	
+	private BuildCustomers() {}
 	//construccion de la cuenta de ahorro
 	public static CustomerBankAccount buildCustomerSavingsAccount(CustomerBankAccountDto dto) {
 		return CustomerBankAccount.builder()
