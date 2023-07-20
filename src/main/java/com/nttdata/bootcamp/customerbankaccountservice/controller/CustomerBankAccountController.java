@@ -64,4 +64,9 @@ public class CustomerBankAccountController {
                 .map(ResponseEntity::ok)
                 .defaultIfEmpty(ResponseEntity.notFound().build());
     }
+    
+    @GetMapping("/getCustomerBankAccountByAccountNumber/{bankAccountNumber}")
+    public Mono<CustomerBankAccount> getCustomerBankAccountByAccountNumber(@PathVariable String bankAccountNumber) {
+        return customerBankAccountService.getCustomerBankAccountByAccountNumber(bankAccountNumber);
+    }
 }

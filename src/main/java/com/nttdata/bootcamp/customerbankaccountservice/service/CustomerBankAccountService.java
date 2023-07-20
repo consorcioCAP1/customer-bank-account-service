@@ -10,4 +10,5 @@ public interface CustomerBankAccountService {
 	public Mono<CustomerBankAccount> saveBusinessAccount(CustomerBankAccountDto businessBankAccount);
 	public Mono<Double> getAccountBalanceByBankAccountNumber(String bankAccountNumber);
 	public Mono<CustomerBankAccount> updateAccountBalance(String bankAccountNumber, Double accountBalance);
+	public Mono<CustomerBankAccount> getCustomerBankAccountByAccountNumber(String bankAccountNumber);
 }

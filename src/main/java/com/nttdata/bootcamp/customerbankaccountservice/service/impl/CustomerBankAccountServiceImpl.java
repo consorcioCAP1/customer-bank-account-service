@@ -8,6 +8,8 @@ import com.nttdata.bootcamp.customerbankaccountservice.documents.CustomerBankAcc
 import com.nttdata.bootcamp.customerbankaccountservice.dto.CustomerBankAccountDto;
 import com.nttdata.bootcamp.customerbankaccountservice.repository.CustomerBankAccountRepository;
 import com.nttdata.bootcamp.customerbankaccountservice.service.CustomerBankAccountService;
+import com.nttdata.bootcamp.customerbankaccountservice.utilities.BuildCustomers;
+
 import lombok.extern.slf4j.Slf4j;
 import reactor.core.publisher.Mono;
 
@@ -44,16 +46,12 @@ public class CustomerBankAccountServiceImpl implements CustomerBankAccountServic
 	                } else {
 	                	log.info("registrando cuenta del cliente: "+ customerBankAccount.getDni());
 	                	//contruyendo el document CustomerBankAccount
-	                	CustomerBankAccount customerBankAccountDocument = CustomerBankAccount.builder()
-	            				.name(customerBankAccount.getName())
-	            				.dni(customerBankAccount.getDni())
-	            				.maintenanceFeeApplies(0.00)
-	            				.bankMovementLimit(customerBankAccount.getBankMovementLimit())
-	            				.typeCustomer(customerBankAccount.getTypeCustomer())
-	            				.accountType(customerBankAccount.getAccountType())
-	            				.accountBalance(customerBankAccount.getAccountBalance())
-	            				.openingDate(customerBankAccount.getOpeningDate())
-	            				.bankAccountNumber(customerBankAccount.getBankAccountNumber()).build();
+	                	CustomerBankAccount customerBankAccountDocument;
+	                	if(customerBankAccount.getAccountType().equals(ACCOUNT_TYPE_SAVING))
+	                		customerBankAccountDocument = 
+	                			BuildCustomers.buildCustomerSavingsCurrentAccount(customerBankAccount);
+	                	else customerBankAccountDocument = 
+	                			BuildCustomers.buildCustomerCurrentAccount(customerBankAccount);
 	                	return repository.save(customerBankAccountDocument);
 	                }
 	            });
@@ -61,16 +59,8 @@ public class CustomerBankAccountServiceImpl implements CustomerBankAccountServic
 		//si es plazo fijo solo se registra
 		else {
 			log.info("registrando cuenta del cliente: "+ customerBankAccount.getDni());
-			CustomerBankAccount customerBankAccountDocument = CustomerBankAccount.builder()
-    				.name(customerBankAccount.getName())
-    				.dni(customerBankAccount.getDni())
-    				.maintenanceFeeApplies(0.00)
-    				.typeCustomer(customerBankAccount.getTypeCustomer())
-    				.accountType(customerBankAccount.getAccountType())
-    				.bankMovementLimit(customerBankAccount.getBankMovementLimit())
-    				.accountBalance(customerBankAccount.getAccountBalance())
-    				.openingDate(customerBankAccount.getOpeningDate())
-    				.bankAccountNumber(customerBankAccount.getBankAccountNumber()).build();
+			CustomerBankAccount customerBankAccountDocument = 
+        			BuildCustomers.buildCustomerFixedTermAccount(customerBankAccount);
 			return repository.save(customerBankAccountDocument); 
 		}
 	}
@@ -80,18 +70,9 @@ public class CustomerBankAccountServiceImpl implements CustomerBankAccountServic
 		if (businessBankAccount.getBankAccountHolder().length==0) {
 			if (businessBankAccount.getAccountType().equals(ACCOUNT_TYPE_CURRENT)) {
 				log.info("registrando cuenta de cliente: "+ businessBankAccount.getDni());
-				CustomerBankAccount customerBankAccountDocument = CustomerBankAccount.builder()
-						.ruc(businessBankAccount.getRuc())
-						.businessName(businessBankAccount.getBusinessName())
-						.clientId(businessBankAccount.getClientId())
-						.typeCustomer(businessBankAccount.getTypeCustomer())
-						.maintenanceFeeApplies(0.00)
-						.bankMovementLimit(0)
-						.bankMovementDay(businessBankAccount.getBankMovementDay())
-						.accountBalance(businessBankAccount.getAccountBalance())
-						.openingDate(businessBankAccount.getOpeningDate())
-						.bankAccountNumber(businessBankAccount.getBankAccountNumber()).build();
-				return repository.save(customerBankAccountDocument);
+				CustomerBankAccount businessBankAccountDocument = 
+	        			BuildCustomers.buildBusinessCurrentAccount(businessBankAccount);
+				return repository.save(businessBankAccountDocument);
 			}
 			else return Mono.error(
 				new RuntimeException("El Cliente Empresarial solo puede tener cuenta corriente."));
@@ -101,14 +82,20 @@ public class CustomerBankAccountServiceImpl implements CustomerBankAccountServic
 		 
 	}
 
-	//metodo para obtener el saldo disponible del numero de cuenta
+	//metodo para obtener el saldo disponible del número de cuenta
 	@Override
 	public Mono<Double> getAccountBalanceByBankAccountNumber(String bankAccountNumber){
 		return repository.findAccountBalanceByBankAccountNumber(bankAccountNumber)
 	            .map(bankAccount -> bankAccount.getAccountBalance());
     }
+	
+	//metodo para obtener el documento Customer by account por número de cuenta
+	@Override
+	public Mono<CustomerBankAccount> getCustomerBankAccountByAccountNumber(String bankAccountNumber){
+		return repository.findAccountBalanceByBankAccountNumber(bankAccountNumber);
+    }
 
-	//metodo para actualizar le account balance en base al numero de cuenta
+	//metodo para actualizar le account balance en base al número de cuenta
 	@Override
 	public Mono<CustomerBankAccount> updateAccountBalance(String bankAccountNumber, Double accountBalance) {
 	        return repository.findByBankAccountNumber(bankAccountNumber)

@@ -1,5 +1,8 @@
 package com.nttdata.bootcamp.customerbankaccountservice.utilities;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
 import com.nttdata.bootcamp.customerbankaccountservice.documents.CustomerBankAccount;
 import com.nttdata.bootcamp.customerbankaccountservice.dto.CustomerBankAccountDto;
 
@@ -7,59 +10,61 @@ public class BuildCustomers {
 	
 	private BuildCustomers() {}
 	//construccion de la cuenta de ahorro
-	public static CustomerBankAccount buildCustomerSavingsAccount(CustomerBankAccountDto dto) {
+	public static CustomerBankAccount buildCustomerSavingsCurrentAccount(CustomerBankAccountDto dto) {
+		LocalDateTime currentDate = LocalDateTime.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 		return CustomerBankAccount.builder()
 				.name(dto.getName())
 				.dni(dto.getDni())
-				.typeCustomer(dto.getTypeCustomer())
-				.maintenanceFeeApplies(0.00)
 				.bankMovementLimit(dto.getBankMovementLimit())
+				.typeCustomer(dto.getTypeCustomer())
+				.accountType(dto.getAccountType())
 				.accountBalance(dto.getAccountBalance())
-				.openingDate(dto.getOpeningDate())
+				.openingDate(currentDate.format(formatter))
 				.bankAccountNumber(dto.getBankAccountNumber()).build();
 	}
 
 	//construccion de la cuenta corriente
 	public static CustomerBankAccount buildCustomerCurrentAccount(CustomerBankAccountDto dto) {
+		LocalDateTime currentDate = LocalDateTime.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 		return CustomerBankAccount.builder()
 				.name(dto.getName())
 				.dni(dto.getDni())
-				.typeCustomer(dto.getTypeCustomer())
 				.maintenanceFeeApplies(dto.getMaintenanceFeeApplies())
-				.bankMovementLimit(0)
-				.bankMovementDay(dto.getBankMovementDay())
+				.typeCustomer(dto.getTypeCustomer())
 				.accountBalance(dto.getAccountBalance())
-				.openingDate(dto.getOpeningDate())
+				.openingDate(currentDate.format(formatter))
 				.bankAccountNumber(dto.getBankAccountNumber()).build();
 	}
 
 	//construccion de la cuenta plazo fijo
 	public static CustomerBankAccount buildCustomerFixedTermAccount(CustomerBankAccountDto dto) {
+		LocalDateTime currentDate = LocalDateTime.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 		return CustomerBankAccount.builder()
 				.name(dto.getName())
 				.dni(dto.getDni())
-				.clientId(dto.getClientId())
 				.typeCustomer(dto.getTypeCustomer())
-				.maintenanceFeeApplies(0.00)
-				.bankMovementLimit(0)
 				.bankMovementDay(dto.getBankMovementDay())
 				.accountBalance(dto.getAccountBalance())
-				.openingDate(dto.getOpeningDate())
+				.openingDate(currentDate.format(formatter))
 				.bankAccountNumber(dto.getBankAccountNumber()).build();
 	}
 
-	//construccion de la cuenta plazo fijo
-	public static CustomerBankAccount buildCustomerBusiness(CustomerBankAccountDto dto) {
+	//construccion de la cuenta corriente empresarial
+	public static CustomerBankAccount buildBusinessCurrentAccount(CustomerBankAccountDto dto) {
+		LocalDateTime currentDate = LocalDateTime.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 		return CustomerBankAccount.builder()
-				.ruc(dto.getRuc())
 				.businessName(dto.getBusinessName())
-				.clientId(dto.getClientId())
+				.ruc(dto.getRuc())
+				.maintenanceFeeApplies(dto.getMaintenanceFeeApplies())
 				.typeCustomer(dto.getTypeCustomer())
-				.maintenanceFeeApplies(0.00)
-				.bankMovementLimit(0)
-				.bankMovementDay(dto.getBankMovementDay())
 				.accountBalance(dto.getAccountBalance())
-				.openingDate(dto.getOpeningDate())
+				.openingDate(currentDate.format(formatter))
 				.bankAccountNumber(dto.getBankAccountNumber()).build();
 	}
+
+
 }
