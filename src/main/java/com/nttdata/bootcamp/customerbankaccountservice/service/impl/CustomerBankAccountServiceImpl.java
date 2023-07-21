@@ -92,14 +92,14 @@ public class CustomerBankAccountServiceImpl implements CustomerBankAccountServic
 	//metodo para obtener el saldo disponible del número de cuenta
 	@Override
 	public Mono<Double> getAccountBalanceByBankAccountNumber(String bankAccountNumber){
-		return repository.findAccountBalanceByBankAccountNumber(bankAccountNumber)
+		return repository.findByBankAccountNumber(bankAccountNumber)
 	            .map(bankAccount -> bankAccount.getAccountBalance());
     }
 	
 	//metodo para obtener el documento Customer by account por número de cuenta
 	@Override
 	public Mono<CustomerBankAccount> getCustomerBankAccountByAccountNumber(String bankAccountNumber){
-		return repository.findAccountBalanceByBankAccountNumber(bankAccountNumber);
+		return repository.findByBankAccountNumber(bankAccountNumber);
     }
 
 	//metodo para actualizar le account balance en base al número de cuenta
