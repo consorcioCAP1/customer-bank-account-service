@@ -19,4 +19,5 @@ public class CustomerBankAccountDto {
 	private Double accountBalance;
 	private String bankAccountNumber;
 	private String accountType;
+	private double minimumOpeningAmount;
 }

@@ -20,8 +20,8 @@ public class CustomerBankAccount {
 	private String businessName;
 	private String ruc;
 	private Double maintenanceFeeApplies;
-	private int bankMovementLimit;
-	private int bankMovementDay;
+	private Integer bankMovementLimit;
+	private Integer bankMovementDay;
 	private String[] bankAccountHolder;
 	private String[] bankSignatory;
 	@Field("accountBalance")
@@ -29,4 +29,5 @@ public class CustomerBankAccount {
 	private String openingDate;
 	private String bankAccountNumber;
 	private String accountType;
+	private Double minimumMonthlyAmount;
 }

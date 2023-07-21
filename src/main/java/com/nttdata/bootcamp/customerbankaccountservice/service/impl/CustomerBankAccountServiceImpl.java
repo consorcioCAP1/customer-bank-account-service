@@ -11,6 +11,7 @@ import com.nttdata.bootcamp.customerbankaccountservice.service.CustomerBankAccou
 import com.nttdata.bootcamp.customerbankaccountservice.utilities.BuildCustomers;
 
 import lombok.extern.slf4j.Slf4j;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @Slf4j
@@ -31,6 +32,9 @@ public class CustomerBankAccountServiceImpl implements CustomerBankAccountServic
 	//metodo para guardar cuentas clientes personal
 	@Override
 	public Mono<CustomerBankAccount> saveCustomerAccount(CustomerBankAccountDto customerBankAccount) {
+		//validacion para monto minimo de apertura
+		if(customerBankAccount.getMinimumOpeningAmount()>customerBankAccount.getAccountBalance())
+			return Mono.error(new RuntimeException("Monto minimo de apertura no superado."));
 		customerBankAccount.setTypeCustomer(TYPE_CUSTOMER_PERSONAL);
 		//si es cuenta de ahorro o corriente se valida la que no haya una previamente creada
 		if (customerBankAccount.getAccountType().equals(ACCOUNT_TYPE_SAVING) || 
@@ -41,8 +45,8 @@ public class CustomerBankAccountServiceImpl implements CustomerBankAccountServic
 				.hasElement()
 	            .flatMap(hasElement -> {
 	                if (hasElement) {
-	                	log.info("Customer: "+customerBankAccount.getDni() +" ya tiene cuenta ahorro creado.");
-	                	return Mono.error(new RuntimeException("El customer ya tiene cuenta ahorro creado."));
+	                	log.info("Cliente: "+customerBankAccount.getDni() +" ya tiene cuenta ahorro creado.");
+	                	return Mono.error(new RuntimeException("El cliente ya tiene cuenta ahorro creado."));
 	                } else {
 	                	log.info("registrando cuenta del cliente: "+ customerBankAccount.getDni());
 	                	//contruyendo el document CustomerBankAccount
@@ -67,9 +71,12 @@ public class CustomerBankAccountServiceImpl implements CustomerBankAccountServic
 
 	@Override
 	public Mono<CustomerBankAccount> saveBusinessAccount(CustomerBankAccountDto businessBankAccount) {
-		if (businessBankAccount.getBankAccountHolder().length==0) {
+		if(businessBankAccount.getMinimumOpeningAmount()>businessBankAccount.getAccountBalance())
+			return Mono.error(new RuntimeException("Monto minimo de apertura no superado."));
+		//validando que cuenta debe tener al menos un titular
+		if (businessBankAccount.getBankAccountHolder().length>0) {
 			if (businessBankAccount.getAccountType().equals(ACCOUNT_TYPE_CURRENT)) {
-				log.info("registrando cuenta de cliente: "+ businessBankAccount.getDni());
+				log.info("registrando cuenta empresarial: "+ businessBankAccount.getRuc());
 				CustomerBankAccount businessBankAccountDocument = 
 	        			BuildCustomers.buildBusinessCurrentAccount(businessBankAccount);
 				return repository.save(businessBankAccountDocument);
@@ -104,5 +111,11 @@ public class CustomerBankAccountServiceImpl implements CustomerBankAccountServic
 	                    return repository.save(bankAccount);
 	                });
 	   }
+
+	//metodo para obtener flux de bank account en pase al ruc y type
+	@Override
+	public Flux<CustomerBankAccount> findByRucAndTypeAccount(String ruc, String typeAccount){
+		return repository.findByRucAndAccountType(ruc, typeAccount);
+	}	
 
 }

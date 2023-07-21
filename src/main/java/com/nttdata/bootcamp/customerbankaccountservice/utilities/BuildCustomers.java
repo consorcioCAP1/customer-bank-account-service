@@ -9,11 +9,13 @@ import com.nttdata.bootcamp.customerbankaccountservice.dto.CustomerBankAccountDt
 public class BuildCustomers {
 	
 	private BuildCustomers() {}
+	private static final Double TRANSACTION_FEE= 50.00;
 	//construccion de la cuenta de ahorro
 	public static CustomerBankAccount buildCustomerSavingsCurrentAccount(CustomerBankAccountDto dto) {
 		LocalDateTime currentDate = LocalDateTime.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-		return CustomerBankAccount.builder()
+		
+        return CustomerBankAccount.builder()
 				.name(dto.getName())
 				.dni(dto.getDni())
 				.bankMovementLimit(dto.getBankMovementLimit())
@@ -21,7 +23,8 @@ public class BuildCustomers {
 				.accountType(dto.getAccountType())
 				.accountBalance(dto.getAccountBalance())
 				.openingDate(currentDate.format(formatter))
-				.bankAccountNumber(dto.getBankAccountNumber()).build();
+				.bankAccountNumber(dto.getBankAccountNumber())
+				.build();
 	}
 
 	//construccion de la cuenta corriente
@@ -33,9 +36,11 @@ public class BuildCustomers {
 				.dni(dto.getDni())
 				.maintenanceFeeApplies(dto.getMaintenanceFeeApplies())
 				.typeCustomer(dto.getTypeCustomer())
+				.accountType(dto.getAccountType())
 				.accountBalance(dto.getAccountBalance())
 				.openingDate(currentDate.format(formatter))
-				.bankAccountNumber(dto.getBankAccountNumber()).build();
+				.bankAccountNumber(dto.getBankAccountNumber())
+				.build();
 	}
 
 	//construccion de la cuenta plazo fijo
@@ -48,8 +53,10 @@ public class BuildCustomers {
 				.typeCustomer(dto.getTypeCustomer())
 				.bankMovementDay(dto.getBankMovementDay())
 				.accountBalance(dto.getAccountBalance())
+				.accountType(dto.getAccountType())
 				.openingDate(currentDate.format(formatter))
-				.bankAccountNumber(dto.getBankAccountNumber()).build();
+				.bankAccountNumber(dto.getBankAccountNumber())
+				.build();
 	}
 
 	//construccion de la cuenta corriente empresarial
@@ -61,9 +68,13 @@ public class BuildCustomers {
 				.ruc(dto.getRuc())
 				.maintenanceFeeApplies(dto.getMaintenanceFeeApplies())
 				.typeCustomer(dto.getTypeCustomer())
+				.accountType(dto.getAccountType())
 				.accountBalance(dto.getAccountBalance())
 				.openingDate(currentDate.format(formatter))
-				.bankAccountNumber(dto.getBankAccountNumber()).build();
+				.bankAccountNumber(dto.getBankAccountNumber())
+				.bankAccountHolder(dto.getBankAccountHolder())
+				.bankSignatory(dto.getBankSignatory())
+				.build();
 	}
 
 

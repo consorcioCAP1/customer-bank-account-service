@@ -69,4 +69,12 @@ public class CustomerBankAccountController {
     public Mono<CustomerBankAccount> getCustomerBankAccountByAccountNumber(@PathVariable String bankAccountNumber) {
         return customerBankAccountService.getCustomerBankAccountByAccountNumber(bankAccountNumber);
     }
+
+    @GetMapping("/getBankAccountByRucAndType/{ruc}/{type}")
+    public Mono<Long> getBankAccountByRucAndType(@PathVariable String ruc,
+    				@PathVariable String type) {
+        return customerBankAccountService.findByRucAndTypeAccount(ruc, type).count();
+    }
+ 
+    
 }
