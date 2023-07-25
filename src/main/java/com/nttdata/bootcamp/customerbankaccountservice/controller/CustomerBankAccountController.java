@@ -15,6 +15,8 @@ import org.springframework.http.ResponseEntity;
 import com.nttdata.bootcamp.customerbankaccountservice.documents.CustomerBankAccount;
 import com.nttdata.bootcamp.customerbankaccountservice.dto.CustomerBankAccountDto;
 import com.nttdata.bootcamp.customerbankaccountservice.service.CustomerBankAccountService;
+
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @RestController
@@ -76,5 +78,9 @@ public class CustomerBankAccountController {
         return customerBankAccountService.findByRucAndTypeAccount(ruc, type).count();
     }
  
+    @GetMapping("/findByNumberDocument/{numberDocument}")
+    public Flux<CustomerBankAccount> findByNumberDocument(@PathVariable String numberDocument) {
+        return customerBankAccountService.findByNumberDocument(numberDocument);
+    }
     
 }

@@ -14,4 +14,5 @@ public interface CustomerBankAccountService {
 	public Mono<CustomerBankAccount> updateAccountBalance(String bankAccountNumber, Double accountBalance);
 	public Mono<CustomerBankAccount> getCustomerBankAccountByAccountNumber(String bankAccountNumber);
 	public Flux<CustomerBankAccount> findByRucAndTypeAccount(String ruc, String typeAccount);
+	public Flux<CustomerBankAccount> findByNumberDocument(String numberDocument);
 }

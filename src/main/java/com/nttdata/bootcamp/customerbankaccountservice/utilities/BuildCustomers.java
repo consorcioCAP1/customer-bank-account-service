@@ -16,8 +16,8 @@ public class BuildCustomers {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 		
         return CustomerBankAccount.builder()
-				.name(dto.getName())
-				.dni(dto.getDni())
+				.clientName(dto.getClientName())
+				.numberDocument(dto.getNumberDocument())
 				.bankMovementLimit(dto.getBankMovementLimit())
 				.typeCustomer(dto.getTypeCustomer())
 				.accountType(dto.getAccountType())
@@ -32,8 +32,8 @@ public class BuildCustomers {
 		LocalDateTime currentDate = LocalDateTime.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 		return CustomerBankAccount.builder()
-				.name(dto.getName())
-				.dni(dto.getDni())
+				.clientName(dto.getClientName())
+				.numberDocument(dto.getNumberDocument())
 				.maintenanceFeeApplies(dto.getMaintenanceFeeApplies())
 				.typeCustomer(dto.getTypeCustomer())
 				.accountType(dto.getAccountType())
@@ -48,8 +48,8 @@ public class BuildCustomers {
 		LocalDateTime currentDate = LocalDateTime.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 		return CustomerBankAccount.builder()
-				.name(dto.getName())
-				.dni(dto.getDni())
+				.clientName(dto.getClientName())
+				.numberDocument(dto.getNumberDocument())
 				.typeCustomer(dto.getTypeCustomer())
 				.bankMovementDay(dto.getBankMovementDay())
 				.accountBalance(dto.getAccountBalance())
@@ -64,8 +64,8 @@ public class BuildCustomers {
 		LocalDateTime currentDate = LocalDateTime.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 		return CustomerBankAccount.builder()
-				.businessName(dto.getBusinessName())
-				.ruc(dto.getRuc())
+				.clientName(dto.getClientName())
+				.numberDocument(dto.getNumberDocument())
 				.maintenanceFeeApplies(dto.getMaintenanceFeeApplies())
 				.typeCustomer(dto.getTypeCustomer())
 				.accountType(dto.getAccountType())

@@ -36,37 +36,43 @@ public class CustomerBankAccountServiceImpl implements CustomerBankAccountServic
 		if(customerBankAccount.getMinimumOpeningAmount()>customerBankAccount.getAccountBalance())
 			return Mono.error(new RuntimeException("Monto minimo de apertura no superado."));
 		customerBankAccount.setTypeCustomer(TYPE_CUSTOMER_PERSONAL);
-		//si es cuenta de ahorro o corriente se valida la que no haya una previamente creada
 		if (customerBankAccount.getAccountType().equals(ACCOUNT_TYPE_SAVING) || 
 				customerBankAccount.getAccountType().equals(ACCOUNT_TYPE_CURRENT) ) {
-			//se realiza la busqueda de cuenta personal por dni y por el tipo de cuenta
-			return repository.findByDniAndAccountType(
-					customerBankAccount.getDni(),customerBankAccount.getAccountType())
-				.hasElement()
-	            .flatMap(hasElement -> {
-	                if (hasElement) {
-	                	log.info("Cliente: "+customerBankAccount.getDni() +" ya tiene cuenta ahorro creado.");
-	                	return Mono.error(new RuntimeException("El cliente ya tiene cuenta ahorro creado."));
-	                } else {
-	                	log.info("registrando cuenta del cliente: "+ customerBankAccount.getDni());
-	                	//contruyendo el document CustomerBankAccount
-	                	CustomerBankAccount customerBankAccountDocument;
-	                	if(customerBankAccount.getAccountType().equals(ACCOUNT_TYPE_SAVING))
-	                		customerBankAccountDocument = 
-	                			BuildCustomers.buildCustomerSavingsCurrentAccount(customerBankAccount);
-	                	else customerBankAccountDocument = 
-	                			BuildCustomers.buildCustomerCurrentAccount(customerBankAccount);
-	                	return repository.save(customerBankAccountDocument);
-	                }
-	            });
+			//se valida que no exista cuenta creada sino se registra
+			 return validateAndSaveAccount(customerBankAccount);
 		}
 		//si es plazo fijo solo se registra
 		else {
-			log.info("registrando cuenta del cliente: "+ customerBankAccount.getDni());
+			log.info("registrando cuenta del cliente: "+ customerBankAccount.getNumberDocument());
 			CustomerBankAccount customerBankAccountDocument = 
         			BuildCustomers.buildCustomerFixedTermAccount(customerBankAccount);
 			return repository.save(customerBankAccountDocument); 
 		}
+	}
+
+	private Mono<CustomerBankAccount>validateAndSaveAccount(CustomerBankAccountDto customerBankAccount){
+	    return repository.findByNumberDocumentAndAccountType(customerBankAccount.getNumberDocument(),
+	    			customerBankAccount.getAccountType())
+	        .next()
+	        .hasElement()
+	        .flatMap(hasElement -> {
+	            if (hasElement) {
+	                log.info("Cliente: " + customerBankAccount.getNumberDocument() 
+	                				+" ya tiene cuenta ahorro creado.");
+	                return Mono.error(new RuntimeException("El cliente ya tiene cuenta ahorro creada."));
+	            } else {
+	                log.info("registrando cuenta del cliente: " + customerBankAccount.getNumberDocument());
+	                CustomerBankAccount customerBankAccountDocument;
+	                if (customerBankAccount.getAccountType().equals(ACCOUNT_TYPE_SAVING)) {
+	                    customerBankAccountDocument = 
+	                    		BuildCustomers.buildCustomerSavingsCurrentAccount(customerBankAccount);
+	                } else {
+	                    customerBankAccountDocument = 
+	                    		BuildCustomers.buildCustomerCurrentAccount(customerBankAccount);
+	                }
+	                return repository.save(customerBankAccountDocument);
+	            }
+	        });
 	}
 
 	@Override
@@ -76,7 +82,7 @@ public class CustomerBankAccountServiceImpl implements CustomerBankAccountServic
 		//validando que cuenta debe tener al menos un titular
 		if (businessBankAccount.getBankAccountHolder().length>0) {
 			if (businessBankAccount.getAccountType().equals(ACCOUNT_TYPE_CURRENT)) {
-				log.info("registrando cuenta empresarial: "+ businessBankAccount.getRuc());
+				log.info("registrando cuenta empresarial: "+ businessBankAccount.getNumberDocument());
 				CustomerBankAccount businessBankAccountDocument = 
 	        			BuildCustomers.buildBusinessCurrentAccount(businessBankAccount);
 				return repository.save(businessBankAccountDocument);
@@ -104,7 +110,7 @@ public class CustomerBankAccountServiceImpl implements CustomerBankAccountServic
 
 	//metodo para actualizar le account balance en base al número de cuenta
 	@Override
-	public Mono<CustomerBankAccount> updateAccountBalance(String bankAccountNumber, Double accountBalance) {
+	public Mono<CustomerBankAccount> updateAccountBalance(String bankAccountNumber, Double accountBalance){
 	        return repository.findByBankAccountNumber(bankAccountNumber)
 	                .flatMap(bankAccount -> {
 	                	bankAccount.setAccountBalance(accountBalance);
@@ -115,7 +121,11 @@ public class CustomerBankAccountServiceImpl implements CustomerBankAccountServic
 	//metodo para obtener flux de bank account en pase al ruc y type
 	@Override
 	public Flux<CustomerBankAccount> findByRucAndTypeAccount(String ruc, String typeAccount){
-		return repository.findByRucAndAccountType(ruc, typeAccount);
+		return repository.findByNumberDocumentAndAccountType(ruc, typeAccount);
 	}	
 
+	@Override
+	public Flux<CustomerBankAccount> findByNumberDocument(String numberDocument){
+		return repository.findByNumberDocument(numberDocument);
+	}
 }

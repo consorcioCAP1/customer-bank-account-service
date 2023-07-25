@@ -7,10 +7,9 @@ import reactor.core.publisher.Mono;
 
 public interface CustomerBankAccountRepository extends ReactiveMongoRepository<CustomerBankAccount, String>{
 
-	Mono<CustomerBankAccount> findByDniAndAccountType(String dni, String accountType);
+	Flux<CustomerBankAccount> findByNumberDocumentAndAccountType(String numberDocument, String accountType);
 	
 	Mono<CustomerBankAccount> findByBankAccountNumber(String bankAccountNumber);
 	
-	Flux<CustomerBankAccount> findByRucAndAccountType(String ruc, String accountType);
-
+	Flux<CustomerBankAccount> findByNumberDocument(String numberDocument);
 }
