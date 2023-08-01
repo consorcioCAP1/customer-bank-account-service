@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.nttdata.bootcamp.customerbankaccountservice.dto.TransactionDto;
 import com.nttdata.bootcamp.customerbankaccountservice.repository.CustomerBankAccountRepository;
 
 import jakarta.annotation.PostConstruct;
@@ -23,17 +24,17 @@ public class KakfaService {
 	@Autowired
 	CustomerBankAccountRepository repository;
 	
-	private final ObjectMapper objectMapper;
-	private final KafkaReceiver<String, String> kafkaReceiver;
-	private final KafkaSender<String, String> kafkaSender;
+	private ObjectMapper objectMapper;
+	@Autowired
+	private KafkaReceiver<String, String> kafkaReceiver;
+	@Autowired
+	private KafkaReceiver<String, TransactionDto> kafkaReceiverTransaction;
+	
+	@Autowired
+	private KafkaSender<String, String> kafkaSender;
     private final String responseTopic = "topicUpdateWallet2";
-
-    KakfaService(KafkaReceiver<String, String> kafkaReceiver, KafkaSender<String, String> kafkaSender,
-    						ObjectMapper objectMapper ){
-    	this.kafkaReceiver = kafkaReceiver;
-    	this.kafkaSender = kafkaSender;
-    	this.objectMapper = objectMapper;
-    }
+    private final String topicUpdateBalanceWallet = "transactionBootCoin";
+    
     @PostConstruct
     public void startConsumeTopic() {
     	consumeTopics();
@@ -54,7 +55,27 @@ public class KakfaService {
                 }
             })
             .subscribe();
+        
+        kafkaReceiverTransaction.receive()
+        .doOnNext(record -> {
+            String topic = record.topic();
+            TransactionDto value = record.value();
+
+            if (topicUpdateBalanceWallet.equals(topic)) {
+            	consumeTopicTransactionBootCoin(value);
+            } else {
+                log.warn("others topic: ", topic);
+            }
+        })
+        .subscribe();
+        
     }
+    
+	public void consumeTopicTransactionBootCoin(TransactionDto value){
+		 
+		System.out.println("Transaction received: " + value);
+		 
+	}
 
 	public void consumeTopicUpdateWallet(String value) {
 	    try {
