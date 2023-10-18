@@ -38,8 +38,8 @@ public class CustomerBankAccountServiceImpl implements CustomerBankAccountServic
 		customerBankAccount.setTypeCustomer(TYPE_CUSTOMER_PERSONAL);
 		if (customerBankAccount.getAccountType().equals(ACCOUNT_TYPE_SAVING) || 
 				customerBankAccount.getAccountType().equals(ACCOUNT_TYPE_CURRENT) ) {
-			//se valida que no exista cuenta creada sino se registra
-			 return validateAndSaveAccount(customerBankAccount);
+			//se valida que no exista cuenta creada
+			 return validateSaveAndCurrentAccount(customerBankAccount);
 		}
 		//si es plazo fijo solo se registra
 		else {
@@ -50,7 +50,7 @@ public class CustomerBankAccountServiceImpl implements CustomerBankAccountServic
 		}
 	}
 
-	private Mono<CustomerBankAccount>validateAndSaveAccount(CustomerBankAccountDto customerBankAccount){
+	private Mono<CustomerBankAccount>validateSaveAndCurrentAccount(CustomerBankAccountDto customerBankAccount){
 	    return repository.findByNumberDocumentAndAccountType(customerBankAccount.getNumberDocument(),
 	    			customerBankAccount.getAccountType())
 	        .next()
@@ -58,8 +58,8 @@ public class CustomerBankAccountServiceImpl implements CustomerBankAccountServic
 	        .flatMap(hasElement -> {
 	            if (hasElement) {
 	                log.info("Cliente: " + customerBankAccount.getNumberDocument() 
-	                				+" ya tiene cuenta ahorro creado.");
-	                return Mono.error(new RuntimeException("El cliente ya tiene cuenta ahorro creada."));
+	                				+" ya posee cuenta creada.");
+	                return Mono.error(new RuntimeException("El cliente ya tiene cuenta creada."));
 	            } else {
 	                log.info("registrando cuenta del cliente: " + customerBankAccount.getNumberDocument());
 	                CustomerBankAccount customerBankAccountDocument;

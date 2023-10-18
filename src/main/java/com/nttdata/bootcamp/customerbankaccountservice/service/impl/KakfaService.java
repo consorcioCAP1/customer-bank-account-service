@@ -24,6 +24,7 @@ public class KakfaService {
 	@Autowired
 	CustomerBankAccountRepository repository;
 	
+	@Autowired
 	private ObjectMapper objectMapper;
 	@Autowired
 	private KafkaReceiver<String, String> kafkaReceiver;

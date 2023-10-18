@@ -9,7 +9,6 @@ import com.nttdata.bootcamp.customerbankaccountservice.dto.CustomerBankAccountDt
 public class BuildCustomers {
 	
 	private BuildCustomers() {}
-	private static final Double TRANSACTION_FEE= 50.00;
 	//construccion de la cuenta de ahorro
 	public static CustomerBankAccount buildCustomerSavingsCurrentAccount(CustomerBankAccountDto dto) {
 		LocalDateTime currentDate = LocalDateTime.now();
